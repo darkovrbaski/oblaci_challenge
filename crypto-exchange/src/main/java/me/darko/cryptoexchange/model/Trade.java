@@ -29,10 +29,10 @@ public class Trade {
 
 	@OneToOne(cascade = { CascadeType.ALL })
 	@JoinColumn(name = "sellOrder_id")
-	CryptoOrder sellOrderId;
+	CryptoOrder sellOrder;
 
 	@Column
-	LocalDateTime createdDateTime;
+	LocalDateTime timestamp;
 
 	@Column
 	Double price;

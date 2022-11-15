@@ -33,7 +33,7 @@ public class CryptoOrder {
 
 	@Column
 	@Enumerated(EnumType.STRING)
-	OrderType orderType;
+	OrderType type;
 
 	@Column
 	Double price;
