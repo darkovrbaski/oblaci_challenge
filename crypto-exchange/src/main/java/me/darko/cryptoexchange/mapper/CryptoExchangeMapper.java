@@ -10,7 +10,7 @@ import me.darko.cryptoexchange.model.CryptoOrder;
 import me.darko.cryptoexchange.model.OrderBook;
 import me.darko.cryptoexchange.model.Trade;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface CryptoExchangeMapper {
 	CryptoOrderDTO cryptoOrderToDTO(CryptoOrder cryptoOrder);
 
