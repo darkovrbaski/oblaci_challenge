@@ -6,9 +6,9 @@ spring:
     name: crypto-exchange
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/CryptoExchangeDb
-    username: postgres
-    password: postgres
+    url: ${POSTGRES_DB_URL:jdbc:postgresql://localhost:5432/CryptoExchangeDb}
+    username: ${POSTGRES_DB_USERNAME:postgres}
+    password: ${POSTGRES_DB_PASSWORD:postgres}
   sql:
     init:
       platform: postgres

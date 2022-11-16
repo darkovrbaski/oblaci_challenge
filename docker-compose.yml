@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  crypto-exchange:
+    image: crypto-exchange
+    container_name: crypto-exchange
+    build:
+      context: .
+      dockerfile: ./crypto-exchange/Dockerfile
+    restart: on-failure
+    environment:
+      POSTGRES_DB_USER: ${POSTGRES_DB_USER}
+      POSTGRES_DB_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      POSTGRES_DB_URL: ${POSTGRES_DB_URL}
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres_db
+    networks:
+      - network
+
+  postgres_db:
+    image: postgres:14.1-alpine
+    container_name: postgres_db
+    restart: on-failure
+    environment:
+      POSTGRES_USER: ${POSTGRES_DB_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
