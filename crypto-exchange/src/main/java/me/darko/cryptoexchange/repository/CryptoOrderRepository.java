@@ -13,10 +13,10 @@ public interface CryptoOrderRepository extends JpaRepository<CryptoOrder, Long> 
 	@Query(value = "SELECT o FROM CryptoOrder o " +
 		"WHERE o.orderStatus like 'OPEN' and o.type like 'SELL' and o.price <= :price " +
 		"ORDER BY o.price ASC, o.createdDateTime ASC")
-	List<CryptoOrder> filterOpenAndPriceLETRequiredOrders(@Param("price") Double requiredPrice);
+	List<CryptoOrder> getSellLowerPricedOlderOrders(@Param("price") Double requiredPrice);
 
 	@Query(value = "SELECT o FROM CryptoOrder o " +
 		"WHERE o.orderStatus like 'OPEN' and o.type like 'BUY' and o.price >= :price " +
 		"ORDER BY o.price DESC, o.createdDateTime ASC")
-	List<CryptoOrder> filterOpenAndPriceGETRequiredOrders(@Param("price") Double requiredPrice);
+	List<CryptoOrder> getBuyHigherPricedOlderOrders(@Param("price") Double requiredPrice);
 }

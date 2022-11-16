@@ -1,7 +1,6 @@
 package me.darko.cryptoexchange.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import me.darko.cryptoexchange.dto.CryptoOrderDTO;
 import me.darko.cryptoexchange.dto.NewOrderDTO;
@@ -19,12 +18,8 @@ public interface CryptoExchangeMapper {
 
 	CryptoOrder NewOrderDTOToCryptoOrder(NewOrderDTO newOrderDTO);
 
-	@Mapping(source = "buyOrder.id", target = "buyOrderId")
-	@Mapping(source = "sellOrder.id", target = "sellOrderId")
 	TradeDTO tradeToDTO(Trade trade);
 
-	@Mapping(source = "buyOrderId", target = "buyOrder.id")
-	@Mapping(source = "sellOrderId", target = "sellOrder.id")
 	Trade DTOToTrade(TradeDTO tradeDTO);
 
 	OrderBookDTO orderBookToDTO(OrderBook orderBook);

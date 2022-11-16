@@ -18,6 +18,7 @@ import me.darko.cryptoexchange.dto.NewOrderDTO;
 import me.darko.cryptoexchange.dto.OrderBookDTO;
 import me.darko.cryptoexchange.service.CryptoOrderService;
 import me.darko.cryptoexchange.service.OrderBookService;
+import me.darko.cryptoexchange.service.TradeService;
 
 @RestController
 @RequestMapping("")
@@ -26,6 +27,7 @@ import me.darko.cryptoexchange.service.OrderBookService;
 public class CryptoExchangeController {
 	CryptoOrderService orderService;
 	OrderBookService orderBookService;
+	TradeService tradeService;
 
 	@PostMapping("/order")
 	public ResponseEntity<CryptoOrderDTO> processOrder(@RequestBody final NewOrderDTO orderDTO) {
@@ -45,6 +47,7 @@ public class CryptoExchangeController {
 	@DeleteMapping("/order/all")
 	public ResponseEntity<?> deleteOrders() {
 		orderService.deleteOrders();
+		tradeService.deleteTrades();
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

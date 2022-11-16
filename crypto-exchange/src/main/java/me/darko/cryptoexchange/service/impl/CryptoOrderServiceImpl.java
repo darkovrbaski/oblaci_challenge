@@ -17,17 +17,16 @@ import me.darko.cryptoexchange.mapper.CryptoExchangeMapper;
 import me.darko.cryptoexchange.model.CryptoOrder;
 import me.darko.cryptoexchange.model.OrderStatus;
 import me.darko.cryptoexchange.model.OrderType;
-import me.darko.cryptoexchange.model.Trade;
 import me.darko.cryptoexchange.repository.CryptoOrderRepository;
-import me.darko.cryptoexchange.repository.TradeRepository;
 import me.darko.cryptoexchange.service.CryptoOrderService;
+import me.darko.cryptoexchange.service.TradeService;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CryptoOrderServiceImpl implements CryptoOrderService {
 	CryptoOrderRepository orderRepository;
-	TradeRepository tradeRepository;
+	TradeService tradeService;
 	CryptoExchangeMapper mapper;
 
 	static String CURRENCY_PAIR = "BTCUSD";
@@ -41,66 +40,53 @@ public class CryptoOrderServiceImpl implements CryptoOrderService {
 		order.setFilledQuantity(0D);
 		order.setOrderStatus(OrderStatus.OPEN);
 		order.setTrades(new ArrayList<>());
+		final var savedOrder = orderRepository.save(order);
 
-		matchOrders(order);
+		matchOrders(savedOrder);
 
-		return mapper.cryptoOrderToDTO(orderRepository.save(order));
+		return mapper.cryptoOrderToDTO(savedOrder);
 	}
 
-	private void matchOrders(final CryptoOrder order) {
-		final List<CryptoOrder> orders;
-		if (order.getType() == OrderType.BUY) {
-			orders = orderRepository.filterOpenAndPriceLETRequiredOrders(order.getPrice());
+	private void matchOrders(final CryptoOrder newOrder) {
+		final List<CryptoOrder> matchedOrders;
+		if (newOrder.getType() == OrderType.BUY) {
+			matchedOrders = orderRepository.getSellLowerPricedOlderOrders(newOrder.getPrice());
 		} else {
-			orders = orderRepository.filterOpenAndPriceGETRequiredOrders(order.getPrice());
+			matchedOrders = orderRepository.getBuyHigherPricedOlderOrders(newOrder.getPrice());
 		}
-		for (final var o : orders) {
-			if (order.getOrderStatus() == OrderStatus.OPEN) {
-				//case 1
-				if (o.getQuantity() == o.getFilledQuantity() + (order.getQuantity() - order.getFilledQuantity())) {
-					o.setOrderStatus(OrderStatus.CLOSED);
-					o.setFilledQuantity(o.getQuantity());
-					orderRepository.save(o);
-
-					order.setOrderStatus(OrderStatus.CLOSED);
-					order.setFilledQuantity(order.getQuantity());
-					break;
-				}
-				//case 2
-				if (o.getQuantity() > o.getFilledQuantity() + (order.getQuantity() - order.getFilledQuantity())) {
-					o.setFilledQuantity(o.getFilledQuantity() + (order.getQuantity() - order.getFilledQuantity()));
-					orderRepository.save(o);
-
-					order.setOrderStatus(OrderStatus.CLOSED);
-					order.setFilledQuantity(order.getQuantity());
-					break;
-				}
-				//case 3
-				if (o.getQuantity() < o.getFilledQuantity() + (order.getQuantity() - order.getFilledQuantity())) {
-					order.setFilledQuantity(order.getFilledQuantity() + (o.getQuantity() - o.getFilledQuantity()));
-
-					o.setOrderStatus(OrderStatus.CLOSED);
-					o.setFilledQuantity(o.getQuantity());
-					orderRepository.save(o);
-				}
+		for (final var matchedOrder : matchedOrders) {
+			if (newOrder.getOrderStatus() == OrderStatus.CLOSED) {
+				break;
 			}
-		}
-	}
+			if (matchedOrder.getQuantity() == matchedOrder.getFilledQuantity() + (newOrder.getQuantity() - newOrder.getFilledQuantity())) {
+				final var trade = tradeService.createTrade(newOrder, matchedOrder);
 
-	private void createTrade(final CryptoOrder order, final CryptoOrder o) {
-		final var trade = new Trade();
-		trade.setId(0L);
-		trade.setPrice(o.getPrice());
-		trade.setQuantity(order.getQuantity() - order.getFilledQuantity());
-		trade.setTimestamp(LocalDateTime.now());
-		if (order.getType() == OrderType.BUY) {
-			trade.setBuyOrder(order);
-			trade.setSellOrder(o);
-		} else {
-			trade.setBuyOrder(o);
-			trade.setSellOrder(order);
+				matchedOrder.setClosedAndFulfilled();
+				matchedOrder.addTrade(trade);
+
+				newOrder.setClosedAndFulfilled();
+				newOrder.addTrade(trade);
+
+			} else if (matchedOrder.getQuantity() > matchedOrder.getFilledQuantity() + (newOrder.getQuantity() - newOrder.getFilledQuantity())) {
+				final var trade = tradeService.createTrade(newOrder, matchedOrder);
+
+				matchedOrder.setFilledQuantity(matchedOrder.getFilledQuantity() + (newOrder.getQuantity() - newOrder.getFilledQuantity()));
+				matchedOrder.addTrade(trade);
+
+				newOrder.setClosedAndFulfilled();
+				newOrder.addTrade(trade);
+			} else {
+				final var trade = tradeService.createTrade(newOrder, matchedOrder);
+
+				newOrder.setFilledQuantity(newOrder.getFilledQuantity() + (matchedOrder.getQuantity() - matchedOrder.getFilledQuantity()));
+				newOrder.addTrade(trade);
+
+				matchedOrder.setClosedAndFulfilled();
+				matchedOrder.addTrade(trade);
+			}
+			orderRepository.save(matchedOrder);
+			orderRepository.save(newOrder);
 		}
-		tradeRepository.save(trade);
 	}
 
 	@Override
