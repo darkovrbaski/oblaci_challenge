@@ -1,7 +1,11 @@
-import { IAccumulatedOrder } from './AccumulatedOrder';
+import { IAccumulatedOrder } from './accumulatedOrder';
 
 export interface IOrderBook {
-  id: number;
-  buyOrder: Array<IAccumulatedOrder>;
-  sellOrder: Array<IAccumulatedOrder>;
+  buyOrders: Array<IAccumulatedOrder>;
+  sellOrders: Array<IAccumulatedOrder>;
 }
+
+export const emptyOrderBook: IOrderBook = {
+  buyOrders: [],
+  sellOrders: [],
+};

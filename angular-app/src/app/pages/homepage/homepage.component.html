@@ -1,0 +1,82 @@
+<div class="header p-5">
+  <div class="container-fluid">
+    <div class="text-center">
+      <h3>Order Book BTC-USD</h3>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="card col-sm-4 px-0 m-2">
+      <div class="card-header text-end">
+        <h5>SELL</h5>
+      </div>
+      <div class="card-body">
+        <div class="row fs-5 pb-3">
+          <div class="col">AMOUNT</div>
+          <div class="col text-end">PRICE</div>
+        </div>
+        <div
+          class="row fs-5 pb-3"
+          *ngFor="let sellOrder of orderBook.sellOrders"
+        >
+          <div class="col">{{ sellOrder.quantity }}</div>
+          <div class="col text-end">{{ sellOrder.price }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card col-sm-4 px-0 m-2">
+      <div class="card-header">
+        <h5>BUY</h5>
+      </div>
+      <div class="card-body">
+        <div class="row fs-5 pb-3">
+          <div class="col">PRICE</div>
+          <div class="col text-end">AMOUNT</div>
+        </div>
+        <div class="row fs-5 pb-3" *ngFor="let buyOrder of orderBook.buyOrders">
+          <div class="col">{{ buyOrder.price }}</div>
+          <div class="col text-end">{{ buyOrder.quantity }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card col-sm-3 px-0 m-2">
+      <div class="card-header text-center">
+        <h5>Order</h5>
+      </div>
+      <div class="card-body">
+        <div class="input-group mb-3">
+          <select class="form-select" [(ngModel)]="newOrder.type">
+            <option value="BUY">BUY</option>
+            <option value="SELL">SELL</option>
+          </select>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text">Price</span>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="newOrder.price"
+          />
+        </div>
+        <div class="input-group mb-1">
+          <span class="input-group-text">Quantity</span>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="newOrder.quantity"
+          />
+        </div>
+      </div>
+      <div class="mb-3 d-flex justify-content-center">
+        <button
+          type="button"
+          class="btn btn-primary w-50"
+          (click)="placeOrder()"
+        >
+          Place order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

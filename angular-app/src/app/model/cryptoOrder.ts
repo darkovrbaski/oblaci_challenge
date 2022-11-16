@@ -13,3 +13,15 @@ export interface ICryptoOrder {
   orderStatus: OrderStatus;
   trades: Array<ITrade>;
 }
+
+export const emptyCryptoOrder: ICryptoOrder = {
+  id: 0,
+  currencyPair: '',
+  createdDateTime: new Date(),
+  type: OrderType.BUY,
+  price: 0,
+  quantity: 0,
+  filledQuantity: 0,
+  orderStatus: OrderStatus.OPEN,
+  trades: [],
+};

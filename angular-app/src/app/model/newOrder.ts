@@ -7,3 +7,11 @@ export interface INewOrder {
   price: number;
   quantity: number;
 }
+
+export const emptyNewOrder: INewOrder = {
+  id: 0,
+  currencyPair: 'BTCUSD',
+  type: OrderType.BUY,
+  price: 0,
+  quantity: 0,
+};

@@ -1,3 +1,4 @@
+import { INewOrder } from './../model/newOrder';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
@@ -13,7 +14,7 @@ export class CryptoExchangeService {
 
   constructor(private http: HttpClient) {}
 
-  processOrder(order: ICryptoOrder): Observable<ICryptoOrder> {
+  processOrder(order: INewOrder): Observable<ICryptoOrder> {
     return this.http
       .post<ICryptoOrder>(`${this.cryptoExchangeUrl}/order`, order)
       .pipe(catchError(this.handleError));
