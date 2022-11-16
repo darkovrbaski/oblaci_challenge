@@ -1,5 +1,7 @@
 package me.darko.cryptoexchange.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +32,7 @@ public class CryptoExchangeController {
 	TradeService tradeService;
 
 	@PostMapping("/order")
-	public ResponseEntity<CryptoOrderDTO> processOrder(@RequestBody final NewOrderDTO orderDTO) {
+	public ResponseEntity<CryptoOrderDTO> processOrder(@Valid @RequestBody final NewOrderDTO orderDTO) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(orderService.processOrder(orderDTO));
 	}
 
