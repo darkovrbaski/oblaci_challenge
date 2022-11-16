@@ -13,5 +13,5 @@ export const emptyNewOrder: INewOrder = {
   currencyPair: 'BTCUSD',
   type: OrderType.BUY,
   price: 0,
-  quantity: 0,
+  quantity: 1,
 };

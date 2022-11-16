@@ -20,7 +20,7 @@ export const emptyCryptoOrder: ICryptoOrder = {
   createdDateTime: new Date(),
   type: OrderType.BUY,
   price: 0,
-  quantity: 0,
+  quantity: 1,
   filledQuantity: 0,
   orderStatus: OrderStatus.OPEN,
   trades: [],
