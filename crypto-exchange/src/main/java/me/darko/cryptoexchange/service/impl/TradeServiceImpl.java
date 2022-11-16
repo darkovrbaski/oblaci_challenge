@@ -20,11 +20,11 @@ public class TradeServiceImpl implements TradeService {
 	TradeRepository tradeRepository;
 
 	@Override
-	public Trade createTrade(final CryptoOrder newOrder, final CryptoOrder matchedOrder) {
+	public Trade createTrade(final CryptoOrder newOrder, final CryptoOrder matchedOrder, final Double quantity) {
 		final var trade = new Trade();
 		trade.setId(0L);
 		trade.setPrice(matchedOrder.getPrice());
-		trade.setQuantity(newOrder.getQuantity() - newOrder.getFilledQuantity());
+		trade.setQuantity(quantity);
 		trade.setTimestamp(LocalDateTime.now());
 		if (newOrder.getType() == OrderType.BUY) {
 			trade.setBuyOrderId(newOrder.getId());

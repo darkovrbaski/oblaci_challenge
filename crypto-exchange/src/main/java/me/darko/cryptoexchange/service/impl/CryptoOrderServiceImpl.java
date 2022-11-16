@@ -59,7 +59,7 @@ public class CryptoOrderServiceImpl implements CryptoOrderService {
 				break;
 			}
 			if (matchedOrder.getQuantity() == matchedOrder.getFilledQuantity() + (newOrder.getQuantity() - newOrder.getFilledQuantity())) {
-				final var trade = tradeService.createTrade(newOrder, matchedOrder);
+				final var trade = tradeService.createTrade(newOrder, matchedOrder, newOrder.getQuantity() - newOrder.getFilledQuantity());
 
 				matchedOrder.setClosedAndFulfilled();
 				matchedOrder.addTrade(trade);
@@ -68,7 +68,7 @@ public class CryptoOrderServiceImpl implements CryptoOrderService {
 				newOrder.addTrade(trade);
 
 			} else if (matchedOrder.getQuantity() > matchedOrder.getFilledQuantity() + (newOrder.getQuantity() - newOrder.getFilledQuantity())) {
-				final var trade = tradeService.createTrade(newOrder, matchedOrder);
+				final var trade = tradeService.createTrade(newOrder, matchedOrder, newOrder.getQuantity() - newOrder.getFilledQuantity());
 
 				matchedOrder.setFilledQuantity(matchedOrder.getFilledQuantity() + (newOrder.getQuantity() - newOrder.getFilledQuantity()));
 				matchedOrder.addTrade(trade);
@@ -76,7 +76,7 @@ public class CryptoOrderServiceImpl implements CryptoOrderService {
 				newOrder.setClosedAndFulfilled();
 				newOrder.addTrade(trade);
 			} else {
-				final var trade = tradeService.createTrade(newOrder, matchedOrder);
+				final var trade = tradeService.createTrade(newOrder, matchedOrder, matchedOrder.getQuantity() - matchedOrder.getFilledQuantity());
 
 				newOrder.setFilledQuantity(newOrder.getFilledQuantity() + (matchedOrder.getQuantity() - matchedOrder.getFilledQuantity()));
 				newOrder.addTrade(trade);

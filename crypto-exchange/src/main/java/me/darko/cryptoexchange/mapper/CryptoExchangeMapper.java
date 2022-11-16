@@ -14,8 +14,6 @@ import me.darko.cryptoexchange.model.Trade;
 public interface CryptoExchangeMapper {
 	CryptoOrderDTO cryptoOrderToDTO(CryptoOrder cryptoOrder);
 
-	CryptoOrder DTOToCryptoOrder(CryptoOrderDTO cryptoOrderDTO);
-
 	CryptoOrder NewOrderDTOToCryptoOrder(NewOrderDTO newOrderDTO);
 
 	TradeDTO tradeToDTO(Trade trade);
@@ -24,5 +22,4 @@ public interface CryptoExchangeMapper {
 
 	OrderBookDTO orderBookToDTO(OrderBook orderBook);
 
-	OrderBook DTOToOrderBook(OrderBookDTO orderBookDTO);
 }

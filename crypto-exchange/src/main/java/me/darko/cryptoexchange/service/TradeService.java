@@ -5,7 +5,7 @@ import me.darko.cryptoexchange.model.Trade;
 
 public interface TradeService {
 
-	Trade createTrade(CryptoOrder newOrder, CryptoOrder matchedOrder);
+	Trade createTrade(CryptoOrder newOrder, CryptoOrder matchedOrder, Double quantity);
 
 	void deleteTrades();
 }
